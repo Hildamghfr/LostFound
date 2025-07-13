@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Mahasiswa - LostFound ITPLN</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 1rem 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .nav-brand i {
+            font-size: 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #64748b;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-menu a:hover,
+        .nav-menu a.active {
+            color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .nav-user {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.5rem 1rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            color: white;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .user-details h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .user-details p {
+            font-size: 0.7rem;
+            opacity: 0.8;
+        }
+
+        .logout-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 0.7rem 1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logout-btn:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+        }
+
+        /* Dashboard Content */
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .welcome-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 25px;
+            padding: 3rem;
+            text-align: center;
+            color: white;
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="80" r="3" fill="rgba(255,255,255,0.1)"/></svg>');
+            animation: float 20s linear infinite;
+        }
+
+        .welcome-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .welcome-title {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .welcome-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+        }
+
+        .quick-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Menu Cards */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .menu-card {
+            background: white;
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .menu-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .menu-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            padding: 2rem;
+            text-align: center;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        }
+
+        .card-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1.5rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: white;
+            position: relative;
+        }
+
+        .menu-card.lost .card-icon {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        .menu-card.found .card-icon {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+
+        .menu-card.search .card-icon {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+        }
+
+        .menu-card.history .card-icon {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 1rem;
+        }
+
+        .card-body {
+            padding: 0 2rem 2rem;
+        }
+
+        .card-description {
+            color: #64748b;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .card-btn {
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            font-size: 1rem;
+        }
+
+        .menu-card.lost .card-btn {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+        }
+
+        .menu-card.found .card-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+
+        .menu-card.search .card-btn {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            color: white;
+        }
+
+        .menu-card.history .card-btn {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+        }
+
+        .card-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Recent Activity */
+        .recent-activity {
+            background: white;
+            border-radius: 25px;
+            padding: 2rem;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .activity-item:hover {
+            background: #e2e8f0;
+        }
+
+        .activity-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .activity-content h4 {
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.3rem;
+        }
+
+        .activity-content p {
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        .activity-time {
+            margin-left: auto;
+            color: #94a3b8;
+            font-size: 0.8rem;
+        }
+
+        @keyframes float {
+            0% { transform: translateX(0) translateY(0); }
+            100% { transform: translateX(-50px) translateY(-50px); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem;
+            }
+
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-menu {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .dashboard-container {
+                padding: 1rem;
+            }
+
+            .welcome-title {
+                font-size: 2rem;
+            }
+
+            .menu-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <i class="fas fa-search"></i>
+                <span>LostFound ITPLN</span>
+            </div>
+            
+            <ul class="nav-menu">
+                <li><a href="student_dashboard.html" class="active"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="report_lost.html"><i class="fas fa-exclamation-triangle"></i> Lapor Hilang</a></li>
+                <li><a href="report_found.html"><i class="fas fa-plus-circle"></i> Lapor Temuan</a></li>
+                <li><a href="search_items.html"><i class="fas fa-search"></i> Cari Barang</a></li>
+            </ul>
+            
+            <div class="nav-user">
+                <div class="user-info">
+                    <div class="user-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="user-details">
+                        <h4 id="userName">Loading...</h4>
+                        <p>Mahasiswa</p>
+                    </div>
+                </div>
+                <button class="logout-btn" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Keluar
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <div class="welcome-section">
+            <div class="welcome-content">
+                <h1 class="welcome-title">Selamat Datang!</h1>
+                <p class="welcome-subtitle">Kelola laporan kehilangan dan temuan barang Anda dengan mudah</p>
+                
+                <div class="quick-stats">
+                    <div class="stat-item">
+                        <div class="stat-number" id="totalReports">0</div>
+                        <div class="stat-label">Total Laporan</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="pendingReports">0</div>
+                        <div class="stat-label">Menunggu</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="approvedReports">0</div>
+                        <div class="stat-label">Disetujui</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="foundItems">0</div>
+                        <div class="stat-label">Ditemukan</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="menu-grid">
+            <div class="menu-card lost" onclick="window.location.href='report_lost.html'">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <h3 class="card-title">Lapor Barang Hilang</h3>
+                </div>
+                <div class="card-body">
+                    <p class="card-description">Laporkan barang yang Anda hilangkan di area kampus dengan detail lengkap untuk memudahkan pencarian</p>
+                    <button class="card-btn">
+                        <i class="fas fa-plus"></i>
+                        Buat Laporan Kehilangan
+                    </button>
+                </div>
+            </div>
+
+            <div class="menu-card found" onclick="window.location.href='report_found.html'">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-hand-holding"></i>
+                    </div>
+                    <h3 class="card-title">Lapor Barang Ditemukan</h3>
+                </div>
+                <div class="card-body">
+                    <p class="card-description">Laporkan barang yang Anda temukan untuk membantu pemiliknya mendapatkan kembali barangnya</p>
+                    <button class="card-btn">
+                        <i class="fas fa-upload"></i>
+                        Lapor Barang Temuan
+                    </button>
+                </div>
+            </div>
+
+            <div class="menu-card search" onclick="window.location.href='search_items.html'">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <h3 class="card-title">Cari Barang Ditemukan</h3>
+                </div>
+                <div class="card-body">
+                    <p class="card-description">Cari barang yang mungkin sudah ditemukan oleh mahasiswa lain dengan fitur pencarian canggih</p>
+                    <button class="card-btn">
+                        <i class="fas fa-search"></i>
+                        Mulai Pencarian
+                    </button>
+                </div>
+            </div>
+
+            <div class="menu-card history" onclick="window.location.href='my_reports.html'">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-history"></i>
+                    </div>
+                    <h3 class="card-title">Riwayat Laporan</h3>
+                </div>
+                <div class="card-body">
+                    <p class="card-description">Lihat status dan riwayat semua laporan yang pernah Anda buat beserta perkembangannya</p>
+                    <button class="card-btn">
+                        <i class="fas fa-list"></i>
+                        Lihat Riwayat
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="recent-activity">
+            <h2 class="section-title">
+                <i class="fas fa-clock"></i>
+                Aktivitas Terbaru
+            </h2>
+            <div class="activity-list" id="activityList">
+                <!-- Activities will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check authentication
+        function checkAuth() {
+            const currentUser = localStorage.getItem('currentUser');
+            if (!currentUser) {
+                window.location.href = 'index.html';
+                return null;
+            }
+            return JSON.parse(currentUser);
+        }
+
+        // Load user data
+        function loadUserData() {
+            const user = checkAuth();
+            if (user) {
+                document.getElementById('userName').textContent = user.name;
+            }
+        }
+
+        // Load dashboard statistics
+        function loadDashboardStats() {
+            const stats = {
+                total: Math.floor(Math.random() * 20) + 5,
+                pending: Math.floor(Math.random() * 8) + 2,
+                approved: Math.floor(Math.random() * 15) + 3,
+                found: Math.floor(Math.random() * 12) + 1
+            };
+
+            // Animate numbers
+            animateNumber('totalReports', stats.total);
+            animateNumber('pendingReports', stats.pending);
+            animateNumber('approvedReports', stats.approved);
+            animateNumber('foundItems', stats.found);
+        }
+
+        // Animate number counting
+        function animateNumber(elementId, targetNumber) {
+            const element = document.getElementById(elementId);
+            let currentNumber = 0;
+            const increment = targetNumber / 30;
+            
+            const timer = setInterval(() => {
+                currentNumber += increment;
+                if (currentNumber >= targetNumber) {
+                    element.textContent = targetNumber;
+                    clearInterval(timer);
+                } else {
+                    element.textContent = Math.floor(currentNumber);
+                }
+            }, 50);
+        }
+
+        // Load recent activities
+        function loadRecentActivities() {
+            const activities = [
+                {
+                    icon: 'fas fa-exclamation-triangle',
+                    iconColor: '#ef4444',
+                    title: 'Laporan Kehilangan Dikirim',
+                    description: 'Laporan kehilangan dompet kulit hitam telah dikirim',
+                    time: '2 jam lalu'
+                },
+                {
+                    icon: 'fas fa-check-circle',
+                    iconColor: '#10b981',
+                    title: 'Laporan Disetujui',
+                    description: 'Laporan penemuan flashdisk telah disetujui admin',
+                    time: '5 jam lalu'
+                },
+                {
+                    icon: 'fas fa-search',
+                    iconColor: '#8b5cf6',
+                    title: 'Pencarian Dilakukan',
+                    description: 'Mencari barang dengan kata kunci "kunci motor"',
+                    time: '1 hari lalu'
+                }
+            ];
+
+            const activityList = document.getElementById('activityList');
+            activityList.innerHTML = activities.map(activity => `
+                <div class="activity-item">
+                    <div class="activity-icon" style="background: ${activity.iconColor}">
+                        <i class="${activity.icon}"></i>
+                    </div>
+                    <div class="activity-content">
+                        <h4>${activity.title}</h4>
+                        <p>${activity.description}</p>
+                    </div>
+                    <div class="activity-time">${activity.time}</div>
+                </div>
+            `).join('');
+        }
+
+        // Logout function
+        function logout() {
+            if (confirm('Apakah Anda yakin ingin keluar?')) {
+                localStorage.removeItem('currentUser');
+                window.location.href = 'index.html';
+            }
+        }
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUserData();
+            loadDashboardStats();
+            loadRecentActivities();
+        });
+    </script>
+</body>
+</html>

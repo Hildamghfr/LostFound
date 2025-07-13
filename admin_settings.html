@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pengaturan Sistem - Admin LostFound ITPLN</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 1rem 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .nav-brand i {
+            font-size: 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #64748b;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-menu a:hover,
+        .nav-menu a.active {
+            color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .nav-user {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.5rem 1rem;
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            border-radius: 15px;
+            color: white;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .user-details h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .user-details p {
+            font-size: 0.7rem;
+            opacity: 0.8;
+        }
+
+        .logout-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 0.7rem 1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logout-btn:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Page Header */
+        .page-header {
+            background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+            color: white;
+            padding: 3rem;
+            border-radius: 25px;
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="80" r="3" fill="rgba(255,255,255,0.1)"/></svg>');
+            animation: float 20s linear infinite;
+        }
+
+        .page-header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .page-header h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .page-header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        /* Settings Container */
+        .settings-container {
+            background: white;
+            border-radius: 25px;
+            padding: 2rem;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        .settings-section {
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .settings-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.9rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #fafbfc;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #6b7280;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(107, 114, 128, 0.1);
+        }
+
+        textarea.form-input {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #10b981;
+        }
+
+        input:focus + .slider {
+            box-shadow: 0 0 1px #10b981;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .save-settings-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 2rem;
+        }
+
+        .save-settings-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+        }
+
+        @keyframes float {
+            0% { transform: translateX(0) translateY(0); }
+            100% { transform: translateX(-50px) translateY(-50px); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem;
+            }
+
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-menu {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            .page-header {
+                padding: 2rem;
+            }
+
+            .page-header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <i class="fas fa-shield-alt"></i>
+                <span>Admin LostFound ITPLN</span>
+            </div>
+            
+            <ul class="nav-menu">
+                <li><a href="admin_dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="admin_reports.html"><i class="fas fa-clipboard-list"></i> Kelola Laporan</a></li>
+                <li><a href="admin_users.html"><i class="fas fa-users"></i> Kelola User</a></li>
+                <li><a href="admin_settings.html" class="active"><i class="fas fa-cog"></i> Pengaturan</a></li>
+            </ul>
+            
+            <div class="nav-user">
+                <div class="user-info">
+                    <div class="user-avatar">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <div class="user-details">
+                        <h4 id="userName">Loading...</h4>
+                        <p>Administrator</p>
+                    </div>
+                </div>
+                <button class="logout-btn" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Keluar
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <div class="page-header-content">
+                <h1><i class="fas fa-cog"></i> Pengaturan Sistem</h1>
+                <p>Konfigurasi umum dan preferensi sistem LostFound ITPLN</p>
+            </div>
+        </div>
+
+        <div class="settings-container">
+            <form id="settingsForm">
+                <div class="settings-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-info-circle"></i>
+                        Pengaturan Umum
+                    </h2>
+                    <div class="form-group">
+                        <label for="siteName" class="form-label">Nama Situs</label>
+                        <input type="text" id="siteName" name="siteName" class="form-input" value="LostFound ITPLN" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="adminEmail" class="form-label">Email Administrator</label>
+                        <input type="email" id="adminEmail" name="adminEmail" class="form-input" value="admin@itpln.ac.id" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="description" class="form-label">Deskripsi Situs</label>
+                        <textarea id="description" name="description" class="form-input" rows="4">Platform pencatatan barang hilang & ditemukan di lingkungan kampus ITPLN.</textarea>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-bell"></i>
+                        Pengaturan Notifikasi
+                    </h2>
+                    <div class="form-group">
+                        <label class="form-label">Aktifkan Notifikasi Email</label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="emailNotifications" name="emailNotifications" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Notifikasi Laporan Baru</label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="newReportNotification" name="newReportNotification" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Notifikasi Klaim Barang</label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="claimNotification" name="claimNotification" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-shield-alt"></i>
+                        Pengaturan Keamanan
+                    </h2>
+                    <div class="form-group">
+                        <label class="form-label">Aktifkan Verifikasi Admin untuk Laporan</label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="adminVerification" name="adminVerification" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Izinkan Pendaftaran Pengguna Baru</label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="allowRegistration" name="allowRegistration" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="save-settings-btn">
+                    <i class="fas fa-save"></i>
+                    Simpan Pengaturan
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Check authentication
+        function checkAuth() {
+            const currentUser = localStorage.getItem('currentUser');
+            if (!currentUser) {
+                window.location.href = 'index.html';
+                return null;
+            }
+            const user = JSON.parse(currentUser);
+            if (user.type !== 'admin') {
+                alert('Akses ditolak! Anda bukan administrator.');
+                window.location.href = 'index.html';
+                return null;
+            }
+            return user;
+        }
+
+        // Load user data for navbar
+        function loadUserData() {
+            const user = checkAuth();
+            if (user) {
+                document.getElementById('userName').textContent = user.name;
+            }
+        }
+
+        // Load settings from localStorage or set defaults
+        function loadSettings() {
+            const settings = JSON.parse(localStorage.getItem('adminSettings') || '{}');
+            
+            document.getElementById('siteName').value = settings.siteName || 'LostFound ITPLN';
+            document.getElementById('adminEmail').value = settings.adminEmail || 'admin@itpln.ac.id';
+            document.getElementById('description').value = settings.description || 'Platform pencatatan barang hilang & ditemukan di lingkungan kampus ITPLN.';
+            document.getElementById('emailNotifications').checked = settings.emailNotifications !== false;
+            document.getElementById('newReportNotification').checked = settings.newReportNotification !== false;
+            document.getElementById('claimNotification').checked = settings.claimNotification !== false;
+            document.getElementById('adminVerification').checked = settings.adminVerification !== false;
+            document.getElementById('allowRegistration').checked = settings.allowRegistration !== false;
+        }
+
+        // Handle form submission to save settings
+        document.getElementById('settingsForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const settings = {
+                siteName: document.getElementById('siteName').value,
+                adminEmail: document.getElementById('adminEmail').value,
+                description: document.getElementById('description').value,
+                emailNotifications: document.getElementById('emailNotifications').checked,
+                newReportNotification: document.getElementById('newReportNotification').checked,
+                claimNotification: document.getElementById('claimNotification').checked,
+                adminVerification: document.getElementById('adminVerification').checked,
+                allowRegistration: document.getElementById('allowRegistration').checked,
+            };
+
+            localStorage.setItem('adminSettings', JSON.stringify(settings));
+            showNotification('Pengaturan berhasil disimpan!', 'success');
+        });
+
+        // Helper functions (reused from dashboard)
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 1rem 1.5rem;
+                border-radius: 12px;
+                color: white;
+                font-weight: 600;
+                z-index: 1000;
+                transform: translateX(400px);
+                transition: transform 0.3s ease;
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+                background: ${type === 'success' ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)' : 
+                           type === 'info' ? 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)' : 
+                           'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)'};
+            `;
+            notification.innerHTML = `
+                <i class="fas ${type === 'success' ? 'fa-check-circle' : 
+                               type === 'info' ? 'fa-info-circle' : 
+                               'fa-exclamation-circle'}"></i>
+                ${message}
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => notification.style.transform = 'translateX(0)', 100);
+            setTimeout(() => {
+                notification.style.transform = 'translateX(400px)';
+                setTimeout(() => notification.remove(), 300);
+            }, 4000);
+        }
+
+        function logout() {
+            if (confirm('Apakah Anda yakin ingin keluar?')) {
+                localStorage.removeItem('currentUser');
+                window.location.href = 'index.html';
+            }
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUserData();
+            loadSettings();
+        });
+    </script>
+</body>
+</html>

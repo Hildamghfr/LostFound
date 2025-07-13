@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - LostFound ITPLN</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 1rem 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .nav-brand i {
+            font-size: 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #64748b;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-menu a:hover,
+        .nav-menu a.active {
+            color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .nav-user {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.5rem 1rem;
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            border-radius: 15px;
+            color: white;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .user-details h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .user-details p {
+            font-size: 0.7rem;
+            opacity: 0.8;
+        }
+
+        .logout-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 0.7rem 1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logout-btn:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Welcome Section */
+        .welcome-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 25px;
+            padding: 3rem;
+            text-align: center;
+            color: white;
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="80" r="3" fill="rgba(255,255,255,0.1)"/></svg>');
+            animation: float 20s linear infinite;
+        }
+
+        .welcome-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .welcome-title {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .welcome-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            border-radius: 20px 20px 0 0;
+        }
+
+        .stat-card.total::before {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .stat-card.pending::before {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        }
+
+        .stat-card.approved::before {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+
+        .stat-card.users::before {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: white;
+        }
+
+        .stat-card.total .stat-icon {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .stat-card.pending .stat-icon {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        }
+
+        .stat-card.approved .stat-icon {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+
+        .stat-card.users .stat-icon {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #6b7280;
+            font-weight: 500;
+            font-size: 1rem;
+        }
+
+        .stat-change {
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .stat-change.positive {
+            color: #10b981;
+        }
+
+        .stat-change.negative {
+            color: #ef4444;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            background: white;
+            border-radius: 25px;
+            padding: 2rem;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .action-card {
+            border: 2px solid #f3f4f6;
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .action-card:hover {
+            border-color: #667eea;
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .action-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .action-card.reports .action-icon {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        }
+
+        .action-card.users .action-icon {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+        }
+
+        .action-card.settings .action-icon {
+            background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+        }
+
+        .action-card.analytics .action-icon {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+
+        .action-title {
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+
+        .action-description {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        /* Recent Activity */
+        .recent-activity {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+
+        .activity-card {
+            background: white;
+            border-radius: 25px;
+            padding: 2rem;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .activity-item:hover {
+            background: #e2e8f0;
+            transform: translateX(5px);
+        }
+
+        .activity-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.1rem;
+        }
+
+        .activity-icon.lost {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        .activity-icon.found {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+
+        .activity-icon.approved {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-content h4 {
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 0.3rem;
+        }
+
+        .activity-content p {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        .activity-time {
+            color: #9ca3af;
+            font-size: 0.8rem;
+        }
+
+        /* Pending Reports */
+        .pending-reports {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .pending-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .pending-item:hover {
+            border-color: #667eea;
+            background: #f8fafc;
+        }
+
+        .pending-info h4 {
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 0.3rem;
+        }
+
+        .pending-info p {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        .pending-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-approve {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-reject {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-view {
+            background: #6b7280;
+            color: white;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #f3f4f6;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .close-btn {
+            background: #f3f4f6;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background: #e5e7eb;
+        }
+
+        @keyframes float {
+            0% { transform: translateX(0) translateY(0); }
+            100% { transform: translateX(-50px) translateY(-50px); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem;
+            }
+
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-menu {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            .welcome-title {
+                font-size: 2rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .recent-activity {
+                grid-template-columns: 1fr;
+            }
+
+            .actions-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <i class="fas fa-shield-alt"></i>
+                <span>Admin LostFound ITPLN</span>
+            </div>
+            
+            <ul class="nav-menu">
+                <li><a href="admin_dashboard.html" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="admin_reports.html"><i class="fas fa-clipboard-list"></i> Kelola Laporan</a></li>
+                <li><a href="admin_users.html"><i class="fas fa-users"></i> Kelola User</a></li>
+                <li><a href="admin_settings.html"><i class="fas fa-cog"></i> Pengaturan</a></li>
+            </ul>
+            
+            <div class="nav-user">
+                <div class="user-info">
+                    <div class="user-avatar">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <div class="user-details">
+                        <h4 id="userName">Loading...</h4>
+                        <p>Administrator</p>
+                    </div>
+                </div>
+                <button class="logout-btn" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Keluar
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="welcome-section">
+            <div class="welcome-content">
+                <h1 class="welcome-title">Dashboard Administrator</h1>
+                <p class="welcome-subtitle">Kelola sistem LostFound ITPLN dengan mudah dan efisien</p>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card total">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-number" id="totalReports">0</div>
+                        <div class="stat-label">Total Laporan</div>
+                    </div>
+                    <div class="stat-icon">
+                        <i class="fas fa-clipboard-list"></i>
+                    </div>
+                </div>
+                <div class="stat-change positive">
+                    <i class="fas fa-arrow-up"></i>
+                    +12% dari bulan lalu
+                </div>
+            </div>
+
+            <div class="stat-card pending">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-number" id="pendingReports">0</div>
+                        <div class="stat-label">Menunggu Verifikasi</div>
+                    </div>
+                    <div class="stat-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                </div>
+                <div class="stat-change negative">
+                    <i class="fas fa-arrow-down"></i>
+                    -5% dari minggu lalu
+                </div>
+            </div>
+
+            <div class="stat-card approved">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-number" id="approvedReports">0</div>
+                        <div class="stat-label">Laporan Disetujui</div>
+                    </div>
+                    <div class="stat-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                </div>
+                <div class="stat-change positive">
+                    <i class="fas fa-arrow-up"></i>
+                    +8% dari minggu lalu
+                </div>
+            </div>
+
+            <div class="stat-card users">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-number" id="totalUsers">0</div>
+                        <div class="stat-label">Total Pengguna</div>
+                    </div>
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                </div>
+                <div class="stat-change positive">
+                    <i class="fas fa-arrow-up"></i>
+                    +3 pengguna baru
+                </div>
+            </div>
+        </div>
+
+        <div class="quick-actions">
+            <h2 class="section-title">
+                <i class="fas fa-bolt"></i>
+                Aksi Cepat
+            </h2>
+            <div class="actions-grid">
+                <div class="action-card reports" onclick="window.location.href='admin_reports.html'">
+                    <div class="action-icon">
+                        <i class="fas fa-clipboard-check"></i>
+                    </div>
+                    <h3 class="action-title">Kelola Laporan</h3>
+                    <p class="action-description">Verifikasi dan kelola laporan barang hilang & ditemukan</p>
+                </div>
+
+                <div class="action-card users" onclick="window.location.href='admin_users.html'">
+                    <div class="action-icon">
+                        <i class="fas fa-user-cog"></i>
+                    </div>
+                    <h3 class="action-title">Kelola Pengguna</h3>
+                    <p class="action-description">Manajemen akun mahasiswa dan administrator</p>
+                </div>
+
+                <div class="action-card analytics" onclick="showAnalytics()">
+                    <div class="action-icon">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <h3 class="action-title">Lihat Statistik</h3>
+                    <p class="action-description">Analisis data dan laporan sistem</p>
+                </div>
+
+                <div class="action-card settings" onclick="window.location.href='admin_settings.html'">
+                    <div class="action-icon">
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                    <h3 class="action-title">Pengaturan</h3>
+                    <p class="action-description">Konfigurasi sistem dan preferensi</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="recent-activity">
+            <div class="activity-card">
+                <h2 class="section-title">
+                    <i class="fas fa-history"></i>
+                    Aktivitas Terbaru
+                </h2>
+                <div class="activity-list" id="activityList">
+                    <!-- Activities will be loaded here -->
+                </div>
+            </div>
+
+            <div class="activity-card">
+                <h2 class="section-title">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Laporan Pending
+                </h2>
+                <div class="pending-reports" id="pendingReportsList">
+                    <!-- Pending reports will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Report Detail Modal -->
+    <div id="reportModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Detail Laporan</h2>
+                <button class="close-btn" onclick="closeModal('reportModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="reportModalContent">
+                <!-- Report details will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allReports = [];
+        let allUsers = [];
+
+        // Check authentication
+        function checkAuth() {
+            const currentUser = localStorage.getItem('currentUser');
+            if (!currentUser) {
+                window.location.href = 'index.html';
+                return null;
+            }
+            
+            const user = JSON.parse(currentUser);
+            if (user.type !== 'admin') {
+                alert('Akses ditolak! Anda bukan administrator.');
+                window.location.href = 'index.html';
+                return null;
+            }
+            
+            return user;
+        }
+
+        // Load user data
+        function loadUserData() {
+            const user = checkAuth();
+            if (user) {
+                document.getElementById('userName').textContent = user.name;
+            }
+        }
+
+        // Load dashboard data
+        function loadDashboardData() {
+            // Load reports
+            const lostReports = JSON.parse(localStorage.getItem('lostReports') || '[]');
+            const foundReports = JSON.parse(localStorage.getItem('foundReports') || '[]');
+            allReports = [...lostReports, ...foundReports];
+
+            // Load users
+            allUsers = JSON.parse(localStorage.getItem('users') || '{}');
+
+            // Create sample data if empty
+            if (allReports.length === 0) {
+                createSampleData();
+            }
+
+            updateStatistics();
+            loadRecentActivity();
+            loadPendingReports();
+        }
+
+        // Create sample data for demonstration
+        function createSampleData() {
+            const sampleReports = [
+                {
+                    id: 1,
+                    type: 'lost',
+                    itemName: 'Smartphone Samsung Galaxy',
+                    category: 'elektronik',
+                    description: 'Smartphone Samsung Galaxy A52 warna biru dengan casing transparan',
+                    lastLocation: 'Perpustakaan Lt. 2',
+                    lostDate: '2024-01-15',
+                    status: 'pending',
+                    reportDate: new Date().toISOString(),
+                    reporter: 'Ahmad Rizki'
+                },
+                {
+                    id: 2,
+                    type: 'found',
+                    itemName: 'Dompet Kulit Coklat',
+                    category: 'aksesoris',
+                    description: 'Dompet kulit warna coklat tua berisi KTP dan kartu ATM',
+                    foundLocation: 'Kantin Utama',
+                    foundDate: '2024-01-14',
+                    status: 'approved',
+                    reportDate: new Date().toISOString(),
+                    reporter: 'Sari Dewi'
+                },
+                {
+                    id: 3,
+                    type: 'lost',
+                    itemName: 'Kunci Motor Honda',
+                    category: 'kendaraan',
+                    description: 'Kunci motor Honda dengan gantungan karakter anime',
+                    lastLocation: 'Parkiran Gedung A',
+                    lostDate: '2024-01-13',
+                    status: 'pending',
+                    reportDate: new Date().toISOString(),
+                    reporter: 'Budi Santoso'
+                }
+            ];
+
+            allReports = sampleReports;
+            localStorage.setItem('lostReports', JSON.stringify(sampleReports.filter(r => r.type === 'lost')));
+            localStorage.setItem('foundReports', JSON.stringify(sampleReports.filter(r => r.type === 'found')));
+        }
+
+        // Update statistics
+        function updateStatistics() {
+            const totalReports = allReports.length;
+            const pendingReports = allReports.filter(r => r.status === 'pending').length;
+            const approvedReports = allReports.filter(r => r.status === 'approved').length;
+            const totalUsers = Object.keys(allUsers).length;
+
+            animateNumber('totalReports', totalReports);
+            animateNumber('pendingReports', pendingReports);
+            animateNumber('approvedReports', approvedReports);
+            animateNumber('totalUsers', totalUsers);
+        }
+
+        // Animate number counting
+        function animateNumber(elementId, targetNumber) {
+            const element = document.getElementById(elementId);
+            let currentNumber = 0;
+            const increment = targetNumber / 30;
+            
+            const timer = setInterval(() => {
+                currentNumber += increment;
+                if (currentNumber >= targetNumber) {
+                    element.textContent = targetNumber;
+                    clearInterval(timer);
+                } else {
+                    element.textContent = Math.floor(currentNumber);
+                }
+            }, 50);
+        }
+
+        // Load recent activity
+        function loadRecentActivity() {
+            const activities = [
+                {
+                    type: 'lost',
+                    icon: 'fas fa-exclamation-triangle',
+                    iconClass: 'lost',
+                    title: 'Laporan Kehilangan Baru',
+                    description: 'Ahmad melaporkan kehilangan smartphone di perpustakaan',
+                    time: '2 jam lalu'
+                },
+                {
+                    type: 'approved',
+                    icon: 'fas fa-check-circle',
+                    iconClass: 'approved',
+                    title: 'Laporan Disetujui',
+                    description: 'Laporan penemuan dompet telah diverifikasi',
+                    time: '4 jam lalu'
+                },
+                {
+                    type: 'found',
+                    icon: 'fas fa-hand-holding',
+                    iconClass: 'found',
+                    title: 'Barang Ditemukan',
+                    description: 'Sari melaporkan penemuan kunci motor di kantin',
+                    time: '6 jam lalu'
+                },
+                {
+                    type: 'approved',
+                    icon: 'fas fa-check-circle',
+                    iconClass: 'approved',
+                    title: 'Laporan Disetujui',
+                    description: 'Laporan kehilangan tas telah diverifikasi',
+                    time: '1 hari lalu'
+                },
+                {
+                    type: 'lost',
+                    icon: 'fas fa-exclamation-triangle',
+                    iconClass: 'lost',
+                    title: 'Laporan Kehilangan Baru',
+                    description: 'Budi melaporkan kehilangan earphone di gedung C',
+                    time: '2 hari lalu'
+                }
+            ];
+
+            const activityList = document.getElementById('activityList');
+            activityList.innerHTML = activities.map(activity => `
+                <div class="activity-item">
+                    <div class="activity-icon ${activity.iconClass}">
+                        <i class="${activity.icon}"></i>
+                    </div>
+                    <div class="activity-content">
+                        <h4>${activity.title}</h4>
+                        <p>${activity.description}</p>
+                    </div>
+                    <div class="activity-time">${activity.time}</div>
+                </div>
+            `).join('');
+        }
+
+        // Load pending reports
+        function loadPendingReports() {
+            const pendingReports = allReports.filter(r => r.status === 'pending');
+            const pendingList = document.getElementById('pendingReportsList');
+
+            if (pendingReports.length === 0) {
+                pendingList.innerHTML = `
+                    <div style="text-align: center; padding: 2rem; color: #6b7280;">
+                        <i class="fas fa-check-circle" style="font-size: 3rem; margin-bottom: 1rem; color: #10b981;"></i>
+                        <p>Tidak ada laporan yang menunggu verifikasi</p>
+                    </div>
+                `;
+                return;
+            }
+
+            pendingList.innerHTML = pendingReports.map(report => `
+                <div class="pending-item">
+                    <div class="pending-info">
+                        <h4>${report.itemName}</h4>
+                        <p>${report.type === 'lost' ? 'Barang Hilang' : 'Barang Ditemukan'} • ${report.reporter}</p>
+                    </div>
+                    <div class="pending-actions">
+                        <button class="action-btn btn-view" onclick="viewReport(${report.id})">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="action-btn btn-approve" onclick="approveReport(${report.id})">
+                            <i class="fas fa-check"></i>
+                        </button>
+                        <button class="action-btn btn-reject" onclick="rejectReport(${report.id})">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // View report details
+        function viewReport(reportId) {
+            const report = allReports.find(r => r.id === reportId);
+            if (!report) return;
+
+            const modalContent = document.getElementById('reportModalContent');
+            modalContent.innerHTML = `
+                <div style="margin-bottom: 2rem;">
+                    <h3 style="font-size: 1.3rem; font-weight: 600; margin-bottom: 1rem;">${report.itemName}</h3>
+                    <div style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.8rem; margin-bottom: 1rem;">
+                        ${report.type === 'lost' ? 'Barang Hilang' : 'Barang Ditemukan'}
+                    </div>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+                    <div>
+                        <strong>Kategori:</strong><br>
+                        <span style="color: #6b7280;">${report.category}</span>
+                    </div>
+                    <div>
+                        <strong>Pelapor:</strong><br>
+                        <span style="color: #6b7280;">${report.reporter}</span>
+                    </div>
+                    <div>
+                        <strong>Lokasi:</strong><br>
+                        <span style="color: #6b7280;">${report.type === 'lost' ? report.lastLocation : report.foundLocation}</span>
+                    </div>
+                    <div>
+                        <strong>Tanggal:</strong><br>
+                        <span style="color: #6b7280;">${formatDate(report.type === 'lost' ? report.lostDate : report.foundDate)}</span>
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 2rem;">
+                    <strong>Deskripsi:</strong><br>
+                    <p style="color: #6b7280; line-height: 1.6; margin-top: 0.5rem;">${report.description}</p>
+                </div>
+                
+                ${report.status === 'pending' ? `
+                    <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                        <button onclick="rejectReport(${report.id}); closeModal('reportModal');" style="
+                            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+                            color: white;
+                            border: none;
+                            padding: 0.8rem 1.5rem;
+                            border-radius: 10px;
+                            cursor: pointer;
+                            font-weight: 600;
+                        ">
+                            <i class="fas fa-times"></i> Tolak
+                        </button>
+                        <button onclick="approveReport(${report.id}); closeModal('reportModal');" style="
+                            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+                            color: white;
+                            border: none;
+                            padding: 0.8rem 1.5rem;
+                            border-radius: 10px;
+                            cursor: pointer;
+                            font-weight: 600;
+                        ">
+                            <i class="fas fa-check"></i> Setujui
+                        </button>
+                    </div>
+                ` : ''}
+            `;
+
+            document.getElementById('reportModal').style.display = 'flex';
+        }
+
+        // Approve report
+        function approveReport(reportId) {
+            const reportIndex = allReports.findIndex(r => r.id === reportId);
+            if (reportIndex === -1) return;
+
+            allReports[reportIndex].status = 'approved';
+            
+            // Update localStorage
+            const lostReports = allReports.filter(r => r.type === 'lost');
+            const foundReports = allReports.filter(r => r.type === 'found');
+            localStorage.setItem('lostReports', JSON.stringify(lostReports));
+            localStorage.setItem('foundReports', JSON.stringify(foundReports));
+
+            showNotification('Laporan berhasil disetujui!', 'success');
+            loadDashboardData(); // Reload data to remove from pending list
+        }
+
+        // Reject report
+        function rejectReport(reportId) {
+            const reportIndex = allReports.findIndex(r => r.id === reportId);
+            if (reportIndex === -1) return;
+
+            allReports[reportIndex].status = 'rejected';
+            
+            // Update localStorage
+            const lostReports = allReports.filter(r => r.type === 'lost');
+            const foundReports = allReports.filter(r => r.type === 'found');
+            localStorage.setItem('lostReports', JSON.stringify(lostReports));
+            localStorage.setItem('foundReports', JSON.stringify(foundReports));
+
+            showNotification('Laporan telah ditolak!', 'error');
+            loadDashboardData(); // Reload data to remove from pending list
+        }
+
+        // Show analytics
+        function showAnalytics() {
+            showNotification('Fitur analitik akan segera tersedia!', 'info');
+        }
+
+        // Close modal
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Format date
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('id-ID', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+
+        // Notification function
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 1rem 1.5rem;
+                border-radius: 12px;
+                color: white;
+                font-weight: 600;
+                z-index: 1000;
+                transform: translateX(400px);
+                transition: transform 0.3s ease;
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+                background: ${type === 'success' ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)' : 
+                           type === 'info' ? 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)' : 
+                           'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)'};
+            `;
+            notification.innerHTML = `
+                <i class="fas ${type === 'success' ? 'fa-check-circle' : 
+                               type === 'info' ? 'fa-info-circle' : 
+                               'fa-exclamation-circle'}"></i>
+                ${message}
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => notification.style.transform = 'translateX(0)', 100);
+            setTimeout(() => {
+                notification.style.transform = 'translateX(400px)';
+                setTimeout(() => notification.remove(), 300);
+            }, 4000);
+        }
+
+        // Logout function
+        function logout() {
+            if (confirm('Apakah Anda yakin ingin keluar?')) {
+                localStorage.removeItem('currentUser');
+                window.location.href = 'index.html';
+            }
+        }
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUserData();
+            loadDashboardData();
+        });
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>

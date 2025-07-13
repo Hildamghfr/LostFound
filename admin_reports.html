@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelola Laporan - Admin LostFound ITPLN</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 1rem 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .nav-brand i {
+            font-size: 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #64748b;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-menu a:hover,
+        .nav-menu a.active {
+            color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .nav-user {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.5rem 1rem;
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            border-radius: 15px;
+            color: white;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .user-details h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .user-details p {
+            font-size: 0.7rem;
+            opacity: 0.8;
+        }
+
+        .logout-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 0.7rem 1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logout-btn:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Page Header */
+        .page-header {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            padding: 3rem;
+            border-radius: 25px;
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="80" r="3" fill="rgba(255,255,255,0.1)"/></svg>');
+            animation: float 20s linear infinite;
+        }
+
+        .page-header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .page-header h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .page-header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        /* Reports Container */
+        .reports-container {
+            background: white;
+            border-radius: 25px;
+            padding: 2rem;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        .reports-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            align-items: center;
+        }
+
+        .search-input-wrapper {
+            flex: 1;
+            min-width: 250px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.8rem 0.8rem 0.8rem 2.5rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #fafbfc;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #f59e0b;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.8rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+            font-size: 1rem;
+        }
+
+        .filter-select {
+            padding: 0.8rem 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            background: #fafbfc;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: #f59e0b;
+            background: white;
+        }
+
+        .reports-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .report-card {
+            border: 2px solid #f3f4f6;
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .report-card:hover {
+            border-color: #f59e0b;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .report-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+        }
+
+        .report-info h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+
+        .report-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        .report-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .report-status {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-approved {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-rejected {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status-found {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .report-description {
+            color: #6b7280;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .report-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .action-btn {
+            padding: 0.7rem 1.5rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-approve {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+
+        .btn-reject {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #6b7280;
+        }
+
+        .empty-icon {
+            font-size: 5rem;
+            margin-bottom: 2rem;
+            color: #d1d5db;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #374151;
+        }
+
+        .empty-state p {
+            font-size: 1.1rem;
+            max-width: 400px;
+            margin: 0 auto 2rem;
+        }
+
+        /* Modal Styles (copied from dashboard for consistency) */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #f3f4f6;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .close-btn {
+            background: #f3f4f6;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background: #e5e7eb;
+        }
+
+        @keyframes float {
+            0% { transform: translateX(0) translateY(0); }
+            100% { transform: translateX(-50px) translateY(-50px); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem;
+            }
+
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-menu {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            .page-header {
+                padding: 2rem;
+            }
+
+            .page-header h1 {
+                font-size: 2rem;
+            }
+
+            .reports-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-input-wrapper {
+                width: 100%;
+            }
+
+            .reports-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+
+            .report-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .report-meta {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .report-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <i class="fas fa-shield-alt"></i>
+                <span>Admin LostFound ITPLN</span>
+            </div>
+            
+            <ul class="nav-menu">
+                <li><a href="admin_dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="admin_reports.html" class="active"><i class="fas fa-clipboard-list"></i> Kelola Laporan</a></li>
+                <li><a href="admin_users.html"><i class="fas fa-users"></i> Kelola User</a></li>
+                <li><a href="admin_settings.html"><i class="fas fa-cog"></i> Pengaturan</a></li>
+            </ul>
+            
+            <div class="nav-user">
+                <div class="user-info">
+                    <div class="user-avatar">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <div class="user-details">
+                        <h4 id="userName">Loading...</h4>
+                        <p>Administrator</p>
+                    </div>
+                </div>
+                <button class="logout-btn" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Keluar
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <div class="page-header-content">
+                <h1><i class="fas fa-clipboard-list"></i> Kelola Laporan</h1>
+                <p>Verifikasi, setujui, tolak, dan kelola semua laporan barang hilang dan ditemukan</p>
+            </div>
+        </div>
+
+        <div class="reports-container">
+            <div class="reports-controls">
+                <div class="search-input-wrapper">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" class="search-input" id="searchQuery" onkeyup="filterAndSortReports()" placeholder="Cari laporan...">
+                </div>
+                <select class="filter-select" id="reportTypeFilter" onchange="filterAndSortReports()">
+                    <option value="all">Semua Jenis</option>
+                    <option value="lost">Barang Hilang</option>
+                    <option value="found">Barang Ditemukan</option>
+                </select>
+                <select class="filter-select" id="reportStatusFilter" onchange="filterAndSortReports()">
+                    <option value="all">Semua Status</option>
+                    <option value="pending">Menunggu</option>
+                    <option value="approved">Disetujui</option>
+                    <option value="rejected">Ditolak</option>
+                    <option value="found">Ditemukan (Hilang)</option>
+                </select>
+                <select class="filter-select" id="sortOrder" onchange="filterAndSortReports()">
+                    <option value="newest">Terbaru</option>
+                    <option value="oldest">Terlama</option>
+                    <option value="itemName">Nama Barang</option>
+                    <option value="status">Status</option>
+                </select>
+            </div>
+
+            <div class="reports-list" id="reportsList">
+                <!-- Reports will be loaded here -->
+            </div>
+
+            <div class="empty-state" id="emptyState" style="display: none;">
+                <div class="empty-icon">
+                    <i class="fas fa-box-open"></i>
+                </div>
+                <h3>Tidak Ada Laporan Ditemukan</h3>
+                <p>Coba ubah filter atau kata kunci pencarian Anda.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Report Detail Modal (reused from dashboard) -->
+    <div id="reportModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Detail Laporan</h2>
+                <button class="close-btn" onclick="closeModal('reportModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="reportModalContent">
+                <!-- Report details will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allReports = [];
+
+        // Check authentication
+        function checkAuth() {
+            const currentUser = localStorage.getItem('currentUser');
+            if (!currentUser) {
+                window.location.href = 'index.html';
+                return null;
+            }
+            const user = JSON.parse(currentUser);
+            if (user.type !== 'admin') {
+                alert('Akses ditolak! Anda bukan administrator.');
+                window.location.href = 'index.html';
+                return null;
+            }
+            return user;
+        }
+
+        // Load user data
+        function loadUserData() {
+            const user = checkAuth();
+            if (user) {
+                document.getElementById('userName').textContent = user.name;
+            }
+        }
+
+        // Load all reports from localStorage
+        function loadAllReports() {
+            const lostReports = JSON.parse(localStorage.getItem('lostReports') || '[]');
+            const foundReports = JSON.parse(localStorage.getItem('foundReports') || '[]');
+            allReports = [...lostReports, ...foundReports];
+            filterAndSortReports(); // Initial display
+        }
+
+        // Filter and sort reports
+        function filterAndSortReports() {
+            const searchQuery = document.getElementById('searchQuery').value.toLowerCase();
+            const reportType = document.getElementById('reportTypeFilter').value;
+            const reportStatus = document.getElementById('reportStatusFilter').value;
+            const sortOrder = document.getElementById('sortOrder').value;
+
+            let filteredReports = allReports.filter(report => {
+                const matchesSearch = report.itemName.toLowerCase().includes(searchQuery) ||
+                                      report.description.toLowerCase().includes(searchQuery) ||
+                                      (report.lastLocation && report.lastLocation.toLowerCase().includes(searchQuery)) ||
+                                      (report.foundLocation && report.foundLocation.toLowerCase().includes(searchQuery));
+                
+                const matchesType = reportType === 'all' || report.type === reportType;
+                const matchesStatus = reportStatus === 'all' || report.status === reportStatus;
+
+                return matchesSearch && matchesType && matchesStatus;
+            });
+
+            // Sort
+            filteredReports.sort((a, b) => {
+                if (sortOrder === 'newest') {
+                    return new Date(b.reportDate) - new Date(a.reportDate);
+                } else if (sortOrder === 'oldest') {
+                    return new Date(a.reportDate) - new Date(b.reportDate);
+                } else if (sortOrder === 'itemName') {
+                    return a.itemName.localeCompare(b.itemName);
+                } else if (sortOrder === 'status') {
+                    return a.status.localeCompare(b.status);
+                }
+                return 0;
+            });
+
+            displayReports(filteredReports);
+        }
+
+        // Display reports in the list
+        function displayReports(reportsToDisplay) {
+            const reportsList = document.getElementById('reportsList');
+            const emptyState = document.getElementById('emptyState');
+
+            if (reportsToDisplay.length === 0) {
+                reportsList.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+            reportsList.innerHTML = reportsToDisplay.map(report => `
+                <div class="report-card">
+                    <div class="report-header">
+                        <div class="report-info">
+                            <h3>${report.itemName}</h3>
+                            <div class="report-meta">
+                                <span><i class="fas fa-tag"></i> ${report.category}</span>
+                                <span><i class="fas fa-map-marker-alt"></i> ${report.type === 'lost' ? report.lastLocation : report.foundLocation}</span>
+                                <span><i class="fas fa-calendar"></i> ${formatDate(report.type === 'lost' ? report.lostDate : report.foundDate)}</span>
+                                <span><i class="fas fa-user"></i> ${report.reporter}</span>
+                            </div>
+                        </div>
+                        <div class="report-status status-${report.status}">
+                            ${getStatusText(report.status)}
+                        </div>
+                    </div>
+                    <p class="report-description">${report.description}</p>
+                    <div class="report-actions">
+                        <button class="action-btn btn-primary" onclick="viewReportDetail(${report.id}); event.stopPropagation();">
+                            <i class="fas fa-eye"></i>
+                            Lihat Detail
+                        </button>
+                        ${report.status === 'pending' ? `
+                            <button class="action-btn btn-approve" onclick="approveReport(${report.id}); event.stopPropagation();">
+                                <i class="fas fa-check"></i>
+                                Setujui
+                            </button>
+                            <button class="action-btn btn-reject" onclick="rejectReport(${report.id}); event.stopPropagation();">
+                                <i class="fas fa-times"></i>
+                                Tolak
+                            </button>
+                        ` : ''}
+                        <button class="action-btn btn-secondary" onclick="deleteReport(${report.id}); event.stopPropagation();">
+                            <i class="fas fa-trash"></i>
+                            Hapus
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // View report detail (reused from dashboard)
+        function viewReportDetail(reportId) {
+            const report = allReports.find(r => r.id === reportId);
+            if (!report) return;
+
+            const modalContent = document.getElementById('reportModalContent');
+            modalContent.innerHTML = `
+                <div style="margin-bottom: 2rem;">
+                    <h3 style="font-size: 1.3rem; font-weight: 600; margin-bottom: 1rem;">${report.itemName}</h3>
+                    <div style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.8rem; margin-bottom: 1rem;">
+                        ${report.type === 'lost' ? 'Barang Hilang' : 'Barang Ditemukan'}
+                    </div>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+                    <div>
+                        <strong>Kategori:</strong><br>
+                        <span style="color: #6b7280;">${report.category}</span>
+                    </div>
+                    <div>
+                        <strong>Pelapor:</strong><br>
+                        <span style="color: #6b7280;">${report.reporter}</span>
+                    </div>
+                    <div>
+                        <strong>Lokasi:</strong><br>
+                        <span style="color: #6b7280;">${report.type === 'lost' ? report.lastLocation : report.foundLocation}</span>
+                    </div>
+                    <div>
+                        <strong>Tanggal:</strong><br>
+                        <span style="color: #6b7280;">${formatDate(report.type === 'lost' ? report.lostDate : report.foundDate)}</span>
+                    </div>
+                    ${report.contactPhone ? `
+                    <div>
+                        <strong>No. HP:</strong><br>
+                        <span style="color: #6b7280;">${report.contactPhone}</span>
+                    </div>` : ''}
+                    ${report.contactEmail ? `
+                    <div>
+                        <strong>Email:</strong><br>
+                        <span style="color: #6b7280;">${report.contactEmail}</span>
+                    </div>` : ''}
+                    ${report.condition ? `
+                    <div>
+                        <strong>Kondisi:</strong><br>
+                        <span style="color: #6b7280;">${report.condition}</span>
+                    </div>` : ''}
+                    ${report.itemValue ? `
+                    <div>
+                        <strong>Nilai Barang:</strong><br>
+                        <span style="color: #6b7280;">${report.itemValue}</span>
+                    </div>` : ''}
+                </div>
+                
+                <div style="margin-bottom: 2rem;">
+                    <strong>Deskripsi Lengkap:</strong><br>
+                    <p style="color: #6b7280; line-height: 1.6; margin-top: 0.5rem;">${report.description}</p>
+                </div>
+                ${report.additionalNotes ? `
+                <div style="margin-bottom: 2rem;">
+                    <strong>Catatan Tambahan:</strong><br>
+                    <p style="color: #6b7280; line-height: 1.6; margin-top: 0.5rem;">${report.additionalNotes}</p>
+                </div>` : ''}
+                
+                <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                    ${report.status === 'pending' ? `
+                        <button onclick="rejectReport(${report.id}); closeModal('reportModal');" style="
+                            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+                            color: white;
+                            border: none;
+                            padding: 0.8rem 1.5rem;
+                            border-radius: 10px;
+                            cursor: pointer;
+                            font-weight: 600;
+                        ">
+                            <i class="fas fa-times"></i> Tolak
+                        </button>
+                        <button onclick="approveReport(${report.id}); closeModal('reportModal');" style="
+                            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+                            color: white;
+                            border: none;
+                            padding: 0.8rem 1.5rem;
+                            border-radius: 10px;
+                            cursor: pointer;
+                            font-weight: 600;
+                        ">
+                            <i class="fas fa-check"></i> Setujui
+                        </button>
+                    ` : ''}
+                    <button onclick="closeModal('reportModal')" style="
+                        background: #f3f4f6;
+                        color: #6b7280;
+                        border: none;
+                        padding: 0.8rem 1.5rem;
+                        border-radius: 10px;
+                        cursor: pointer;
+                        font-weight: 600;
+                    ">
+                        Tutup
+                    </button>
+                </div>
+            `;
+
+            document.getElementById('reportModal').style.display = 'flex';
+        }
+
+        // Approve report
+        function approveReport(reportId) {
+            const reportIndex = allReports.findIndex(r => r.id === reportId);
+            if (reportIndex === -1) return;
+
+            allReports[reportIndex].status = 'approved';
+            updateLocalStorageReports();
+            showNotification('Laporan berhasil disetujui!', 'success');
+            filterAndSortReports(); // Re-render list
+        }
+
+        // Reject report
+        function rejectReport(reportId) {
+            const reportIndex = allReports.findIndex(r => r.id === reportId);
+            if (reportIndex === -1) return;
+
+            allReports[reportIndex].status = 'rejected';
+            updateLocalStorageReports();
+            showNotification('Laporan telah ditolak!', 'error');
+            filterAndSortReports(); // Re-render list
+        }
+
+        // Delete report
+        function deleteReport(reportId) {
+            if (confirm('Apakah Anda yakin ingin menghapus laporan ini?')) {
+                allReports = allReports.filter(r => r.id !== reportId);
+                updateLocalStorageReports();
+                showNotification('Laporan berhasil dihapus!', 'success');
+                filterAndSortReports(); // Re-render list
+            }
+        }
+
+        // Helper to update localStorage after changes
+        function updateLocalStorageReports() {
+            const lostReports = allReports.filter(r => r.type === 'lost');
+            const foundReports = allReports.filter(r => r.type === 'found');
+            localStorage.setItem('lostReports', JSON.stringify(lostReports));
+            localStorage.setItem('foundReports', JSON.stringify(foundReports));
+        }
+
+        // Helper functions (reused from dashboard)
+        function getStatusText(status) {
+            const statusMap = {
+                'pending': 'Menunggu',
+                'approved': 'Disetujui',
+                'rejected': 'Ditolak',
+                'found': 'Ditemukan'
+            };
+            return statusMap[status] || status;
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('id-ID', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 1rem 1.5rem;
+                border-radius: 12px;
+                color: white;
+                font-weight: 600;
+                z-index: 1000;
+                transform: translateX(400px);
+                transition: transform 0.3s ease;
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+                background: ${type === 'success' ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)' : 
+                           type === 'info' ? 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)' : 
+                           'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)'};
+            `;
+            notification.innerHTML = `
+                <i class="fas ${type === 'success' ? 'fa-check-circle' : 
+                               type === 'info' ? 'fa-info-circle' : 
+                               'fa-exclamation-circle'}"></i>
+                ${message}
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => notification.style.transform = 'translateX(0)', 100);
+            setTimeout(() => {
+                notification.style.transform = 'translateX(400px)';
+                setTimeout(() => notification.remove(), 300);
+            }, 4000);
+        }
+
+        function logout() {
+            if (confirm('Apakah Anda yakin ingin keluar?')) {
+                localStorage.removeItem('currentUser');
+                window.location.href = 'index.html';
+            }
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUserData();
+            loadAllReports();
+        });
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>
